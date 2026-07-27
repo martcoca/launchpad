@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+*.tsbuildinfo
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Agentic dispatch state — never committed
+.agentic/
+
+# OS
+.DS_Store
