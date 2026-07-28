@@ -6,6 +6,14 @@ node_modules/
 out/
 *.tsbuildinfo
 
+# OpenTofu local state and working data
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
 # Local environment
 .env
 .env.*
