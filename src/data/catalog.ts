@@ -18,6 +18,8 @@ export const catalog: CatalogEntry[] = [
     language: "TypeScript",
     framework: "Next.js",
     infrastructureTool: "OpenTofu",
-    status: "In progress"
+    status: "Live",
+    repositoryUrl: "https://github.com/martcoca/launchpad",
+    liveSiteUrl: "https://martcoca.com"
   }
 ];
