@@ -1,35 +1,30 @@
+import Link from "next/link";
+import { organization } from "../data/organization";
 import { catalog } from "../data/catalog";
-import { portfolioCost } from "../data/cost";
-import { profile } from "../data/profile";
+import { pageCopy } from "../data/pages";
 
 export default function Home() {
+  const shipped = catalog.filter((entry) => entry.status === "Live");
+
   return (
     <main>
-      <section className="hero" aria-labelledby="profile-name">
-        <p className="eyebrow">Portfolio / Launchpad</p>
-        <h1 id="profile-name">{profile.name}</h1>
-        <p className="headline">{profile.headline}</p>
-        <p className="summary">{profile.summary}</p>
-        <dl className="profile-details">
-          <div><dt>Location</dt><dd>{profile.location}</dd></div>
-          <div><dt>Contact</dt><dd>{profile.contact}</dd></div>
-        </dl>
-        <nav aria-label="Profile links">
-          {profile.links.map((link) => <a key={link.label} href={link.href}>{link.label}</a>)}
+      <section className="hero" aria-labelledby="org-name">
+        <p className="eyebrow">{pageCopy.home.eyebrow}</p>
+        <h1 id="org-name">{organization.name}</h1>
+        <p className="headline">{organization.tagline}</p>
+        <p className="summary">{organization.description}</p>
+        <p className="summary">{organization.familyFraming}</p>
+        <nav aria-label="Home links">
+          <Link href="/products">{pageCopy.home.productsCta}</Link>
+          <Link href="/about">{pageCopy.home.aboutCta}</Link>
         </nav>
       </section>
 
-      <section className="cost" aria-labelledby="cost-heading">
-        <p className="eyebrow">All-in portfolio cost</p>
-        <h2 id="cost-heading">{portfolioCost.monthlyTotal}<span> / month</span></h2>
-        <p>Includes {portfolioCost.includes}</p>
-      </section>
-
-      <section aria-labelledby="catalog-heading">
-        <p className="eyebrow">Application catalog</p>
-        <h2 id="catalog-heading">What is running</h2>
+      <section aria-labelledby="shipped-heading">
+        <p className="eyebrow">{pageCopy.products.eyebrow}</p>
+        <h2 id="shipped-heading">{pageCopy.home.shippedHeading}</h2>
         <div className="catalog">
-          {catalog.map((entry) => (
+          {shipped.map((entry) => (
             <article className="catalog-entry" key={entry.name}>
               <div className="entry-heading">
                 <div>
@@ -38,12 +33,6 @@ export default function Home() {
                 </div>
                 <span className="status">{entry.status}</span>
               </div>
-              <dl className="stack">
-                <div><dt>Cloud</dt><dd>{entry.cloud}</dd></div>
-                <div><dt>Language</dt><dd>{entry.language}</dd></div>
-                <div><dt>Framework</dt><dd>{entry.framework}</dd></div>
-                <div><dt>Infrastructure</dt><dd>{entry.infrastructureTool}</dd></div>
-              </dl>
               {(entry.repositoryUrl || entry.liveSiteUrl) && (
                 <p className="entry-links">
                   {entry.repositoryUrl && <a href={entry.repositoryUrl}>Repository</a>}

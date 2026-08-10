@@ -10,6 +10,12 @@ export type CatalogEntry = {
   liveSiteUrl?: string;
 };
 
+// The catalog's existing `status` field already distinguishes delivered from intended
+// work; this derives the visible label from it rather than adding a redundant field.
+export function deliveryStatus(entry: CatalogEntry): "Delivered" | "Intended" {
+  return entry.status === "Live" ? "Delivered" : "Intended";
+}
+
 export const catalog: CatalogEntry[] = [
   {
     name: "Launchpad",
