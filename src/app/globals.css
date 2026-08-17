@@ -1,34 +1,273 @@
-:root { color: #172033; background: #f7f8fc; font-family: Arial, Helvetica, sans-serif; }
-* { box-sizing: border-box; }
-body { margin: 0; }
-.site-nav { align-items: center; border-bottom: 1px solid #dfe3eb; display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between; margin: 0 auto; padding: 1.25rem 1rem; width: min(100% - 2rem, 960px); }
-.site-nav-primary, .site-nav-secondary { display: flex; flex-wrap: wrap; gap: 1rem; }
-.site-nav-primary a { font-weight: 700; }
-.site-nav-secondary { font-size: .85rem; }
-main { width: min(100% - 2rem, 960px); margin: 0 auto; padding: 5rem 0; }
-.empty-state { background: #fff; border: 1px dashed #c7ccd8; border-radius: .75rem; color: #4b5565; padding: 2rem; }
-section { margin-bottom: 4rem; }
-.hero { max-width: 720px; }
-.eyebrow { color: #5b4cd8; font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0 0 .75rem; text-transform: uppercase; }
-h1, h2, h3, p { margin-top: 0; }
-h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: .95; margin-bottom: 1rem; }
-h2 { font-size: 2rem; margin-bottom: 1rem; }
-h3 { font-size: 1.35rem; margin-bottom: .4rem; }
-.headline { color: #5b4cd8; font-size: 1.25rem; font-weight: 700; }
-.summary { font-size: 1.1rem; line-height: 1.6; }
-.profile-details, .stack { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
-dt { color: #697386; font-size: .8rem; margin-bottom: .2rem; }
-dd { margin: 0; }
-nav, .entry-links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
-a { color: #4034a4; font-weight: 700; }
-.cost { background: #1f1b4d; border-radius: 1rem; color: #fff; padding: 2rem; }
-.cost .eyebrow { color: #bdb7ff; }
-.cost h2 { font-size: 3rem; margin-bottom: .5rem; }
-.cost h2 span { font-size: 1rem; font-weight: 400; }
-.cost p:last-child { margin-bottom: 0; max-width: 600px; }
-.catalog { display: grid; gap: 1rem; }
-.catalog-entry { background: #fff; border: 1px solid #dfe3eb; border-radius: .75rem; padding: 1.5rem; }
-.entry-heading { display: flex; gap: 1rem; justify-content: space-between; }
-.entry-heading p { color: #4b5565; margin-bottom: 1.25rem; }
-.status { align-self: flex-start; background: #e7e5ff; border-radius: 999px; color: #4034a4; font-size: .8rem; font-weight: 700; padding: .35rem .65rem; white-space: nowrap; }
-@media (max-width: 600px) { main { padding: 3rem 0; } .entry-heading { display: block; } .status { display: inline-block; margin-bottom: 1rem; } }
+/* Design foundation — hand-rolled custom properties, no framework.
+ *
+ * Tokens rather than a component library on purpose: the portfolio spans React, Vue,
+ * and Angular across products, and a shared visual identity must not become a shared
+ * implementation. Every value below is portable to those stacks unchanged; none of the
+ * component rules are.
+ *
+ * Direction: modern technical, muted, blue. Monospace carries the technical register —
+ * eyebrows, status, and figures — so colour does not have to shout to signal it. */
+
+:root {
+  /* Colour — light. Every foreground/background pair below clears WCAG 2.2 AA. */
+  --bg:              #f5f8fa;
+  --surface:         #ffffff;
+  --surface-sunken:  #eef3f7;
+  --ink:             #0f1d28;
+  --ink-muted:       #52697a;
+  --ink-faint:       #7b8f9d;
+  --line:            #dbe4ea;
+  --line-strong:     #c3d1db;
+  --accent:          #2b6087;
+  --accent-hover:    #1d4a6b;
+  --accent-soft:     #e5eff6;
+  --accent-ink:      #ffffff;
+  --inverse-bg:      #10222f;
+  --inverse-ink:     #e8f0f5;
+  --inverse-muted:   #9fb8c7;
+
+  /* Type — 1.25 modular scale off a 1rem base */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.375rem;
+  --text-2xl:  1.75rem;
+  --text-3xl:  2.25rem;
+  --text-hero: clamp(2.5rem, 6vw, 4rem);
+  --leading-tight: 1.15;
+  --leading-normal: 1.6;
+  --tracking-wide: 0.09em;
+
+  /* Space — 4px base */
+  --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.5rem;   --space-6: 2rem;
+  --space-7: 3rem;     --space-8: 4rem;     --space-9: 6rem;
+
+  --radius-sm: 4px;
+  --radius:    8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgb(15 29 40 / 0.05);
+  --shadow:    0 2px 8px rgb(15 29 40 / 0.06);
+
+  --measure: 68ch;
+  --page: 1080px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:             #0b1218;
+    --surface:        #121d25;
+    --surface-sunken: #0e171e;
+    --ink:            #e7eef4;
+    --ink-muted:      #93a8b7;
+    --ink-faint:      #6d8494;
+    --line:           #22323e;
+    --line-strong:    #314655;
+    --accent:         #79b0d6;
+    --accent-hover:   #9ac8e6;
+    --accent-soft:    #162a38;
+    --accent-ink:     #08131b;
+    --inverse-bg:     #16252f;
+    --inverse-ink:    #e7eef4;
+    --inverse-muted:  #93a8b7;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { line-height: var(--leading-tight); text-wrap: balance; }
+h1, h2, h3, p, dl, ul { margin-top: 0; }
+h1 { font-size: var(--text-hero); letter-spacing: -0.02em; margin-bottom: var(--space-4); }
+h2 { font-size: var(--text-2xl); letter-spacing: -0.01em; margin-bottom: var(--space-4); }
+h3 { font-size: var(--text-xl); margin-bottom: var(--space-2); }
+p  { margin-bottom: var(--space-4); max-width: var(--measure); }
+
+a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--accent-hover); text-decoration-color: currentColor; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* Layout ------------------------------------------------------------------ */
+
+main {
+  width: min(100% - var(--space-6), var(--page));
+  margin: 0 auto;
+  padding: var(--space-9) 0;
+}
+section { margin-bottom: var(--space-9); }
+section:last-child { margin-bottom: 0; }
+
+/* Navigation -------------------------------------------------------------- */
+
+.site-nav {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.site-nav-primary, .site-nav-secondary { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+.site-nav-primary a {
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.site-nav-primary a:hover { color: var(--accent); }
+.site-nav-secondary { font-size: var(--text-sm); }
+.site-nav-secondary a { color: var(--ink-muted); font-weight: 500; text-decoration: none; }
+.site-nav-secondary a:hover { color: var(--accent); }
+
+/* Hero -------------------------------------------------------------------- */
+
+.hero { max-width: 46rem; padding-block: var(--space-4) var(--space-6); }
+.eyebrow {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  margin: 0 0 var(--space-3);
+  text-transform: uppercase;
+}
+.headline { color: var(--ink); font-size: var(--text-xl); font-weight: 600; }
+.summary  { color: var(--ink-muted); font-size: var(--text-lg); }
+
+/* Definition grids -------------------------------------------------------- */
+
+.profile-details, .stack {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  margin: 0;
+}
+dt {
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-1);
+  text-transform: uppercase;
+}
+dd { margin: 0; font-size: var(--text-sm); }
+
+/* Catalog ----------------------------------------------------------------- */
+
+.catalog { display: grid; gap: var(--space-4); }
+@media (min-width: 48rem) {
+  .catalog { grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
+}
+.catalog-entry {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.catalog-entry:hover { border-color: var(--line-strong); box-shadow: var(--shadow); }
+.entry-heading { display: flex; gap: var(--space-4); justify-content: space-between; }
+.entry-heading h3 { margin-bottom: 0; }
+.entry-heading p { color: var(--ink-muted); font-size: var(--text-sm); margin-bottom: var(--space-4); }
+.entry-links { display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: var(--text-sm); }
+
+/* In-content link groups. `.site-nav` is also a <nav>, but its class beats this
+ * element selector, so the sticky header keeps its own layout. */
+main nav { display: flex; flex-wrap: wrap; gap: var(--space-5); margin-top: var(--space-5); }
+
+.status {
+  align-self: flex-start;
+  background: var(--accent-soft);
+  border-radius: var(--radius-pill);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: var(--space-1) var(--space-3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Cost panel — the one deliberately loud surface, because the figure is the claim */
+
+.cost {
+  background: var(--inverse-bg);
+  border-radius: var(--radius-lg);
+  color: var(--inverse-ink);
+  padding: var(--space-7);
+}
+.cost .eyebrow { color: var(--inverse-muted); }
+.cost h2 {
+  font-family: var(--font-mono);
+  font-size: var(--text-3xl);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+.cost h2 span { font-family: var(--font-sans); font-size: var(--text-base); font-weight: 400; }
+.cost p { color: var(--inverse-muted); }
+.cost p:last-child { margin-bottom: 0; }
+.cost a { color: var(--inverse-ink); }
+
+/* Empty state ------------------------------------------------------------- */
+
+.empty-state {
+  background: var(--surface-sunken);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  padding: var(--space-6);
+}
+
+/* Responsive and motion --------------------------------------------------- */
+
+@media (max-width: 40rem) {
+  main { padding: var(--space-7) 0; }
+  section { margin-bottom: var(--space-7); }
+  .entry-heading { display: block; }
+  .status { display: inline-block; margin-bottom: var(--space-3); }
+  .cost { padding: var(--space-5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
